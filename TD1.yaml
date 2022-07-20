@@ -76,7 +76,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/CreateStudent'
+                $ref: '#/components/schemas/Student'
       responses:
           200:
             description: student Updated
@@ -85,32 +85,61 @@ paths:
                 schema:
                   type: array
                   items:
-                    $ref: '#/components/schemas/CreateStudent'
+                    $ref: '#/components/schemas/Student'
           400:
             description: Bad request
     patch:
       tags:
       - Students
-      summary: Update information about a student (partiel)
-      operationId: UpdatingStudent
-      description: Update existing student
+      summary: Update existing student (partiel)
+      description: |
+        Possible updates openapi:
+        * name: change
+        * adress: change
+        * birth_date: change
+        * phoneNumbers: add
+      operationId: UpdateExistingStudent
       requestBody:
-        description: Student to be changed
+        required: true
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/CreateStudent'
+                $ref: '#/components/schemas/Student'
+            examples:
+              changeName:
+                summary: Change name
+                description: How to change name and what it does
+                value:
+                  id: 1
+                  name: "New name"
+              changeAddress:
+                summary: Change address
+                value:
+                  id: 1
+                  name: "New address"
+              changeNameAndAddress:
+                summary: Change name and address
+                value:
+                  id: 1
+                  name: "New name"
+                  address: "New address"
+              addPhoneNumbers:
+                summary: add phoneNumbers
+                value:
+                  id: 1
+                  PhoneNumbers:
+                  - Number: '0326200100'
+                    country_code: '261'
+                  - Number: '0321234567'
+                    country_code: '261'
       responses:
           200:
             description: student Updated
             content:
               application/json:
                 schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/CreateStudent'
+                    $ref: '#/components/schemas/Student'
+
           400:
             description: Bad request
 
@@ -189,13 +218,14 @@ paths:
         operationId: createNew
         description: Create new courses from an array
         requestBody:
+          required: true
           description: Course to be created
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Courses'
+                  $ref: '#/components/schemas/CreateCourses'
         responses:
           200:
             description: new course
@@ -236,7 +266,7 @@ paths:
         tags:
           - Courses
         summary: Update info about course
-        operationId: UpdateCourse
+        operationId: UpdateTheCourse
         description: Update info about course(partiel)
         requestBody:
           description: change the course
@@ -306,7 +336,7 @@ components:
       properties:
         id:
           type: integer
-          example: 10
+          example: 10     
     CreateStudent:
       type: object
       properties:
@@ -319,15 +349,30 @@ components:
           type: string
           format: date
           example: "2022-01-01"
-
+        PhoneNumbers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneNumber'
+    PhoneNumber: 
+      type: object
+      properties:
+        Number:
+          type: string
+          example: '0347986896'
+        country_code:
+          type: string
+          example: '261'
     Courses:
       allOf:
-      - $ref: '#/components/schemas/Courses'
+      - $ref: '#/components/schemas/CreateCourses'
       type: object
       properties:
         id:
           type: integer
           example: 10
+    CreateCourses:
+      type: object
+      properties:
         code:
           type: string
           example: PROG1
@@ -341,7 +386,7 @@ components:
           type: string
           format: date
           example: "2022-01-01"
-        
+       
         
       
   
